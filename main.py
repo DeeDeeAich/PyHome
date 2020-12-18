@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv
 import json
 import webbrowser
+import time
 
 # Grabs API key
 load_dotenv("api_key.env")
@@ -16,7 +17,12 @@ api_key = json.loads(api_key)
 # Initial window - edit later
 root = Tk()
 root.geometry("915x600")
-root.title("Starter Py")
+root.title("Starter Page")
+
+# Title
+ttk.Label(root, text="Starter Page", font=("Nevis", 18)).pack()
+
+# Time 
 
 # Verses grabber - edit later
 verses = open("verses.txt", "r")
@@ -28,12 +34,11 @@ daily_verse = daily_verse["passages"][0]
 url = feedparser.parse("https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml")
 for num in range(0, 6):
     try:
-        ttk.Label(root, text=url["entries"][num]["title_detail"]["value"]).pack()
-        link_label = ttk.Label(root, text=url["entries"][num]["id"])
-        link_label.bind("<Button-1>", lambda e: webbrowser.open(url["entries"][num]["id"]))
-        link_label.pack()
-        label_text = "Published: " + url["entries"][num]["published"]
-        ttk.Label(root, text=label_text).pack()
+        ttk.Label(root, text=url["entries"][num]["title_detail"]["value"], font=("Times New Roman", 12)).pack()
+        link_label = {}
+        link_label[num] = ttk.Label(root, text=url["entries"][num]["id"], font=("Consolas", 10))
+        link_label[num].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][num]["id"]))
+        link_label[num].pack()
     except KeyError:
         continue
     except IndexError:
