@@ -31,8 +31,6 @@ daily_verse = json.loads(daily_verse.text)
 daily_verse = daily_verse["passages"][0]
 
 link_label = {}
-interval_1 = 0
-interval_2 = 0
 url = feedparser.parse("https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml")
 for num in range(0, 6):
     try:
