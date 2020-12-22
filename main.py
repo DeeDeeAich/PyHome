@@ -22,7 +22,7 @@ root.title("Starter Page")
 # Title - edit later
 #ttk.Label(root, text="Starter Page", font=("Nevis", 18)).grid(column=1, row=1, sticky=N)
 
-# Time 
+# Time - solve not updating error
 def update_time():
     global time
     time = datetime.datetime.now()
@@ -30,14 +30,6 @@ def update_time():
 
 time_label = ttk.Label(root, text="")
 time_label.after(1000, update_time) # first param is in milliseconds
-time_label.after(1000, update_time)
-time_label.after(1000, update_time)
-time_label.after(1000, update_time)
-time_label.after(1000, update_time)
-time_label.after(1000, update_time)
-time_label.after(1000, update_time)
-time_label.after(1000, update_time)
-time_label.after(1000, update_time)
 time_label.grid()
 
 # RSS Feed - improve later
@@ -68,12 +60,26 @@ daily_verse = requests.get(f"https://api.esv.org/v3/passage/text/?q={verses.read
 daily_verse = json.loads(daily_verse.text)
 daily_verse = daily_verse["passages"][0]
 
-ttk.Label(root, text="").grid()
+ttk.Label(root, text=" ").grid(row=12, column=0)
 ttk.Label(root, text="Daily Verse: ", font=("Cardo", 12)).grid(row=13, column=0)
 ttk.Label(root, text=daily_verse, font=("Cardo", 11)).grid(row=14, column=0)
 
 # Weather web scraper - edit later
 
 # To-do list - edit later
+checklist_items = ttk.Entry(root)
+checklist_items.grid(row=3, column=2)
+
+item = {}
+counter = 0
+def submit():
+    global counter
+    counter += 1
+    item[counter] = ttk.Checkbutton(root, text=checklist_items.get())
+    checklist_items.delete(0, END)
+    item[counter].grid()
+
+
+submit_button = ttk.Button(root, command=submit).grid(row=2, column=2)
 
 root.mainloop()
