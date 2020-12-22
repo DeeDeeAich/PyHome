@@ -62,7 +62,10 @@ daily_verse = daily_verse["passages"][0]
 
 ttk.Label(root, text=" ").grid(row=12, column=0)
 ttk.Label(root, text="Daily Verse: ", font=("Cardo", 12)).grid(row=13, column=0)
-ttk.Label(root, text=daily_verse, font=("Cardo", 11)).grid(row=14, column=0)
+verse = ttk.Label(root, text=daily_verse[0:80], font=("Cardo", 11))
+verse.grid(row=14, column=0)
+ttk.Label(root, text=daily_verse[80:160]).grid(row=15, column=0)
+ttk.Label(root, text=daily_verse[160:240]).grid(row=16, column=0)
 
 # Weather web scraper - edit later
 
@@ -70,16 +73,29 @@ ttk.Label(root, text=daily_verse, font=("Cardo", 11)).grid(row=14, column=0)
 checklist_items = ttk.Entry(root)
 checklist_items.grid(row=3, column=2)
 
+check_variable = IntVar()
 item = {}
-counter = 0
+counter = 0 
 def submit():
-    global counter
-    counter += 1
-    item[counter] = ttk.Checkbutton(root, text=checklist_items.get())
-    checklist_items.delete(0, END)
-    item[counter].grid()
+    if checklist_items.get() == "":
+        error = Toplevel(root)
+        error.title("Error!")
+        error.geometry("250x50")
+        ttk.Label(error, text="Error, cannot add a blank to-do list item!").pack()
+    # for i in item:
+    #     if i == checklist_items.get():
+    #         error = Toplevel(root)
+    #         error.title("Error!")
+    #         error.geometry("250x50")
+    #         ttk.Label(error, text="Error, cannot add duplicate item to to-do list!")
+    else:
+        global counter
+        counter += 1
+        item[counter] = ttk.Checkbutton(root, text=checklist_items.get(), variable=check_variable)
+        checklist_items.delete(0, END)
+        item[counter].grid()
+        print(item)
 
-
-submit_button = ttk.Button(root, command=submit).grid(row=2, column=2)
+submit_button = ttk.Button(root, command=submit, text="Add Item").grid(row=2, column=2)
 
 root.mainloop()
