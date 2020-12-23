@@ -23,18 +23,18 @@ root.title("Starter Page")
 #ttk.Label(root, text="Starter Page", font=("Nevis", 18)).grid(column=1, row=1, sticky=N)
 
 # Time - solve not updating error
-def update_time():
-    global time
-    time = datetime.datetime.now()
-    time_label.configure(text=time.strftime("%I:%M:%S"))
+# def update_time():
+#     global time
+#     time = datetime.datetime.now()
+#     time_label.configure(text=time.strftime("%I:%M:%S"))
 
-time_label = ttk.Label(root, text="")
-time_label.after(1000, update_time) # first param is in milliseconds
-time_label.grid()
+# time_label = ttk.Label(root, text="")
+# time_label.after(1000, update_time) # first param is in milliseconds
+# time_label.grid()
 
 # RSS Feed - improve later
 link_label = {}
-url = feedparser.parse("https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml")
+url = feedparser.parse("https://babylonbee.com/feed")
 for num in range(0, 6):
     try:
         label_text = url["entries"][num]["title_detail"]["value"]
@@ -54,6 +54,7 @@ link_label[3].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][3]["id
 link_label[4].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][4]["id"]))
 link_label[5].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][5]["id"]))
 
+ttk.Label(root, text="").grid(sticky=N, row=16)
 # Verses grabber - edit later
 verses = open("verses.txt", "r")
 daily_verse = requests.get(f"https://api.esv.org/v3/passage/text/?q={verses.readline()}", headers=api_key)
@@ -67,14 +68,14 @@ verse.grid(row=14, column=0)
 ttk.Label(root, text=daily_verse[80:160]).grid(row=15, column=0)
 ttk.Label(root, text=daily_verse[160:240]).grid(row=16, column=0)
 
-# Weather web scraper - edit later
+# Weather web scraper - edit and document later
 
-# To-do list - edit later
+# To-do list - edit and document later
 checklist_items = ttk.Entry(root)
-checklist_items.grid(row=3, column=2)
+checklist_items.grid(row=0, column=2)
 
-check_variable = IntVar()
-item = {}
+check_variable = [IntVar()]
+items = {}
 counter = 0 
 def submit():
     if checklist_items.get() == "":
@@ -82,20 +83,26 @@ def submit():
         error.title("Error!")
         error.geometry("250x50")
         ttk.Label(error, text="Error, cannot add a blank to-do list item!").pack()
-    # for i in item:
-    #     if i == checklist_items.get():
-    #         error = Toplevel(root)
-    #         error.title("Error!")
-    #         error.geometry("250x50")
-    #         ttk.Label(error, text="Error, cannot add duplicate item to to-do list!")
-    else:
-        global counter
-        counter += 1
-        item[counter] = ttk.Checkbutton(root, text=checklist_items.get(), variable=check_variable)
-        checklist_items.delete(0, END)
-        item[counter].grid()
-        print(item)
+    elif len(items) >= 10:
+        error = Toplevel(root)
+        error.title("Error!")
+        error.geometry("350x50")
+        ttk.Label(error, text="Error, a maximum of 10 items have been added to your To-Do list!").pack()
+    for item in items.values():
+        if item == checklist_items.get():
+            error = Toplevel(root)
+            error.title("Error!")
+            error.geometry("300x50")
+            ttk.Label(error, text="Error, cannot add duplicate item to To-Do list!").pack()
+        else:
+            global counter
+            counter += 1
+            check_variable.append(IntVar())
+            items[counter] = ttk.Checkbutton(root, text=checklist_items.get(), variable=check_variable[counter])
+            checklist_items.delete(0, END)
+            row_num = counter + 1
+            items[counter].grid(row=row_num, column=2)
 
-submit_button = ttk.Button(root, command=submit, text="Add Item").grid(row=2, column=2)
+submit_button = ttk.Button(root, command=submit, text="Add Item").grid(row=1, column=2)
 
 root.mainloop()
