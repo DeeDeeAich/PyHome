@@ -88,21 +88,27 @@ def submit():
         error.title("Error!")
         error.geometry("350x50")
         ttk.Label(error, text="Error, a maximum of 10 items have been added to your To-Do list!").pack()
-    for item in items.values():
-        if item == checklist_items.get():
-            error = Toplevel(root)
-            error.title("Error!")
-            error.geometry("300x50")
-            ttk.Label(error, text="Error, cannot add duplicate item to To-Do list!").pack()
-        else:
-            global counter
-            counter += 1
-            check_variable.append(IntVar())
-            items[counter] = ttk.Checkbutton(root, text=checklist_items.get(), variable=check_variable[counter])
-            checklist_items.delete(0, END)
-            row_num = counter + 1
-            items[counter].grid(row=row_num, column=2)
+    elif len(checklist_items.get()) > 40:
+        error = Toplevel(root)
+        error.title("Error!")
+        error.geometry("350x50")
+        ttk.Label(error, text="Error, your To-Do list item is too long!").pack()
+    elif item == checklist_items.get():
+        error = Toplevel(root)
+        error.title("Error!")
+        error.geometry("350x50")
+        ttk.Label(error, text="Error, your To-Do list item is too long!").pack()
+        # not working
+    else:
+        global counter
+        counter += 1
+        check_variable.append(IntVar())
+        items[counter] = ttk.Checkbutton(root, text=checklist_items.get(), variable=check_variable[counter])
+        checklist_items.delete(0, END)
+        row_num = counter + 1
+        items[counter].grid(row=row_num, column=2)
 
-submit_button = ttk.Button(root, command=submit, text="Add Item").grid(row=1, column=2)
+
+add_item = ttk.Button(root, command=submit, text="Add Item").grid(row=1, column=2)
 
 root.mainloop()
