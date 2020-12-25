@@ -34,7 +34,7 @@ root.title("Starter Page")
 
 # RSS Feed - improve later
 link_label = {}
-url = feedparser.parse("https://babylonbee.com/feed")
+url = feedparser.parse("https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml")
 for num in range(0, 6):
     try:
         label_text = url["entries"][num]["title_detail"]["value"]
@@ -87,18 +87,18 @@ def submit():
         error = Toplevel(root)
         error.title("Error!")
         error.geometry("350x50")
-        ttk.Label(error, text="Error, a maximum of 10 items have been added to your To-Do list!").pack()
+        ttk.Label(error, textPp="Error, a maximum of 10 items have been added to your To-Do list!").pack()
     elif len(checklist_items.get()) > 40:
         error = Toplevel(root)
         error.title("Error!")
         error.geometry("350x50")
         ttk.Label(error, text="Error, your To-Do list item is too long!").pack()
-    elif item == checklist_items.get():
-        error = Toplevel(root)
-        error.title("Error!")
-        error.geometry("350x50")
-        ttk.Label(error, text="Error, your To-Do list item is too long!").pack()
-        # not working
+    # elif item == checklist_items.get():
+    #     error = Toplevel(root)
+    #     error.title("Error!")
+    #     error.geometry("350x50")
+    #     ttk.Label(error, text="Error, your To-Do list item is too long!").pack()
+    #     # not working
     else:
         global counter
         counter += 1

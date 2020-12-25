@@ -131,3 +131,5 @@ dmypy.json
 .vscode/
 starter-py/
 *.env
+.DS_Store/
+pyvenv.cfg
