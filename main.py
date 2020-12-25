@@ -55,6 +55,7 @@ link_label[4].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][4]["id
 link_label[5].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][5]["id"]))
 
 ttk.Label(root, text="").grid(sticky=N, row=16)
+
 # Verses grabber - edit later
 verses = open("verses.txt", "r")
 daily_verse = requests.get(f"https://api.esv.org/v3/passage/text/?q={verses.readline()}", headers=api_key)
@@ -69,6 +70,8 @@ ttk.Label(root, text=daily_verse[80:160]).grid(row=15, column=0)
 ttk.Label(root, text=daily_verse[160:240]).grid(row=16, column=0)
 
 # Weather web scraper - edit and document later
+
+
 
 # To-do list - edit and document later
 checklist_items = ttk.Entry(root)
