@@ -1,5 +1,4 @@
 import requests
-import urllib
 from tkinter import *
 from tkinter import ttk
 import feedparser
@@ -7,7 +6,8 @@ import os
 from dotenv import load_dotenv
 import json
 import webbrowser
-import datetime
+import time
+from bs4 import BeautifulSoup
 
 # Grabs API key
 load_dotenv("api_key.env")
@@ -20,18 +20,19 @@ root.geometry("915x600")
 root.title("Starter Page")
 
 # Title - edit later
-#ttk.Label(root, text="Starter Page", font=("Nevis", 18)).grid(column=1, row=1, sticky=N)
+title_label = ttk.Label(root, text="Starter Page", font=("Nevis", 18))
+title_label.grid(column=1, row=0, sticky=N)
+title_label.configure(anchor="center")
 
 # Time - solve not updating error
-# def update_time():
-#     global time
-#     time = datetime.datetime.now()
-#     time_label.configure(text=time.strftime("%I:%M:%S"))
+def update_time():
+    now = time.strftime("%I:%M:%S")
+    time_label.configure(text=now)
+    time_label.after(1000, update_time)
 
-# time_label = ttk.Label(root, text="")
-# time_label.after(1000, update_time) # first param is in milliseconds
-# time_label.grid()
-
+time_label = ttk.Label(root, text=time.strftime("%I:%M:%S"))
+time_label.grid(row=0, column=2)
+update_time()
 # RSS Feed - improve later
 link_label = {}
 url = feedparser.parse("https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml")
@@ -68,21 +69,29 @@ verse = ttk.Label(root, text=daily_verse[0:80], font=("Cardo", 11))
 verse.grid(row=14, column=0)
 ttk.Label(root, text=daily_verse[80:160]).grid(row=15, column=0)
 ttk.Label(root, text=daily_verse[160:240]).grid(row=16, column=0)
-ttk.Label(root, text="test").grid(row=17, column=0)
-Label(root, text="test").grid(row=18, column=0)
 
 # Weather web scraper - edit and document later
+ttk.Label(root, text="NOTE: Your location will not be stored. This is for weather information purposes. \nPlease enter a city or zip code.", anchor="center").grid(column=2, row=13)
+location = ttk.Entry(root)
+location.grid(column=2, row=14)
 
+def submit_weather():
+    url = requests.get(f'https://www.google.com/search?q=weather+{location.get()}')
+    location.delete(0, END)
+    soup = BeautifulSoup(url.content, 'html.parser')
+    print(soup.find(id="wob_loc"))
+    # ttk.Label(root, text=soup.find("div", attrs={"id":"wob_loc"})).grid(column=2, row=16)
 
+ttk.Button(root, text="Submit", command=submit_weather).grid(row=15, column=2)
 
 # To-do list - edit and document later
 checklist_items = ttk.Entry(root)
-checklist_items.grid(row=0, column=2)
+checklist_items.grid(row=1, column=2)
 
 check_variable = [IntVar()]
 items = {}
-counter = 0 
-def submit():
+counter = 0
+def submit_checklist():
     if checklist_items.get() == "":
         error = Toplevel(root)
         error.title("Error!")
@@ -92,7 +101,7 @@ def submit():
         error = Toplevel(root)
         error.title("Error!")
         error.geometry("350x50")
-        ttk.Label(error, textPp="Error, a maximum of 10 items have been added to your To-Do list!").pack()
+        ttk.Label(error, text="Error, you cannot add over 10 items to your To-Do list!").pack()
     elif len(checklist_items.get()) > 40:
         error = Toplevel(root)
         error.title("Error!")
@@ -110,10 +119,13 @@ def submit():
         check_variable.append(IntVar())
         items[counter] = ttk.Checkbutton(root, text=checklist_items.get(), variable=check_variable[counter])
         checklist_items.delete(0, END)
-        row_num = counter + 1
+        row_num = counter + 2
         items[counter].grid(row=row_num, column=2)
 
+def enter_key(event):
+    submit_checklist()
 
-add_item = ttk.Button(root, command=submit, text="Add Item").grid(row=1, column=2)
+add_item = ttk.Button(root, command=submit_checklist, text="Add Item").grid(row=2, column=2)
+checklist_items.bind("<Return>", enter_key)
 
 root.mainloop()
