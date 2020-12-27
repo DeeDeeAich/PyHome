@@ -68,6 +68,8 @@ verse = ttk.Label(root, text=daily_verse[0:80], font=("Cardo", 11))
 verse.grid(row=14, column=0)
 ttk.Label(root, text=daily_verse[80:160]).grid(row=15, column=0)
 ttk.Label(root, text=daily_verse[160:240]).grid(row=16, column=0)
+ttk.Label(root, text="test").grid(row=17, column=0)
+Label(root, text="test").grid(row=18, column=0)
 
 # Weather web scraper - edit and document later
 
