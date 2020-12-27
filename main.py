@@ -16,7 +16,7 @@ api_key = json.loads(api_key)
 
 # Initial window - edit later
 root = Tk()
-root.geometry("915x600")
+root.geometry("1175x600")
 root.title("Starter Page")
 
 # Title - edit later
@@ -71,18 +71,28 @@ ttk.Label(root, text=daily_verse[80:160]).grid(row=15, column=0)
 ttk.Label(root, text=daily_verse[160:240]).grid(row=16, column=0)
 
 # Weather web scraper - edit and document later
-ttk.Label(root, text="NOTE: Your location will not be stored. This is for weather information purposes. \nPlease enter a city or zip code.", anchor="center").grid(column=2, row=13)
+weather_notice = ttk.Label(root, text="NOTE: Your location will not be stored. This is for weather information purposes. \nPlease enter a city or zip code.", anchor="center")
+weather_notice.grid(column=2, row=13)
 location = ttk.Entry(root)
 location.grid(column=2, row=14)
 
 def submit_weather():
-    url = requests.get(f'https://www.google.com/search?q=weather+{location.get()}')
-    location.delete(0, END)
-    soup = BeautifulSoup(url.content, 'html.parser')
-    print(soup.find(id="wob_loc"))
-    # ttk.Label(root, text=soup.find("div", attrs={"id":"wob_loc"})).grid(column=2, row=16)
+    weather_notice.grid_forget()
+    submit_weather_button.grid_forget()
 
-ttk.Button(root, text="Submit", command=submit_weather).grid(row=15, column=2)
+    user_location = location.get()
+    location.grid_forget()
+
+    print(user_location)
+    url = f"https://www.google.com/search?q=weather+{user_location}"
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, "html.parser")
+    
+    ttk.Label(root, text=soup.find("div", class_="BNeawe iBp4i AP7Wnd").text, font=("Times New Roman", 12)).grid(row=13, column=2)
+    ttk.Label(root, text=soup.find("div", class_="BNeawe tAd8D AP7Wnd").text, font=("Times New Roman", 12)).grid(row=14, column=2)
+
+submit_weather_button = ttk.Button(root, text="Submit", command=submit_weather)
+submit_weather_button.grid(row=15, column=2)
 
 # To-do list - edit and document later
 checklist_items = ttk.Entry(root)
@@ -121,6 +131,10 @@ def submit_checklist():
         checklist_items.delete(0, END)
         row_num = counter + 2
         items[counter].grid(row=row_num, column=2)
+
+    for i in range(0, 10):
+        if check_variable[i].get():
+            items[i].grid_forget()
 
 def enter_key(event):
     submit_checklist()
