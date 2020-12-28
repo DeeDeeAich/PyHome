@@ -38,38 +38,46 @@ update_time()
 link_label = {}
 rss_feed_entry = ttk.Entry(root)
 def get_articles():
+    row_article = 1
+    row_link = 2
     for num in range(0, 6):
         try:
-            rss_notice.grid_forget()
+            rss_instructions.grid_forget()
+            url = feedparser.parse(rss_feed_entry.get())
             rss_feed_entry.grid_forget()
             submit_rss.grid_forget()
 
-            url = feedparser.parse(rss_feed_entry.get())
-            label_text = url["entries"][num]["title_detail"]["value"]
-            row_num1 = num + 1
-            ttk.Label(root, text=f"{label_text[0:70]}...", font=("Times New Roman", 12)).grid(row=row_num1, column=0)
-            label_text = url["entries"][num]["id"]
-            link_label[num] = ttk.Label(root, text=f"{label_text[0:70]}...", font=("Consolas", 10))
-            row_num2 = num + 3
-            link_label[num].grid(row=row_num2, column=0)
+            article_title = url["entries"][num]["title_detail"]["value"]
+            ttk.Label(root, text=f"{article_title[0:70]}...").grid(row=row_article, column=0)
+            row_article += 2
+            
+            article_link = url["entries"][num]["id"]
+            link_label[num] = ttk.Label(root, text=f"{article_link[0:70]}...")
+            link_label[num].grid(row=row_link, column=0)
+            row_link += 2
         except KeyError:
             continue
         except IndexError:
             continue
 
-    # link_label[0].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][0]["id"]))
-    # link_label[1].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][1]["id"]))
-    # link_label[2].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][2]["id"]))
-    # link_label[3].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][3]["id"]))
-    # link_label[4].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][4]["id"]))
-    # link_label[5].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][5]["id"]))
+    link_label[0].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][0]["id"]))
+    link_label[1].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][1]["id"]))
+    link_label[2].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][2]["id"]))
+    link_label[3].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][3]["id"]))
+    link_label[4].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][4]["id"]))
+    link_label[5].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][5]["id"]))
 
-rss_notice = ttk.Label(root, text="Please enter an RSS Feed Link:")
-rss_notice.grid(column=0, row=1)
+def enter_key_rss(event):
+    get_articles()
+
+rss_instructions = ttk.Label(root, text="Please enter an RSS Feed Link:")
+rss_instructions.grid(column=0, row=1)
 rss_feed_entry.grid(column=0, row=2)
+rss_feed_entry.bind("<Return>", enter_key_rss)
+
 submit_rss = ttk.Button(root, text="Submit", command=get_articles)
 submit_rss.grid(column=0, row=3)
-ttk.Label(root, text="").grid(sticky=N, row=16)
+ttk.Label(root, text=" ").grid(row=13, column=0)
 
 # Verses grabber - edit later
 verses = open("verses.txt", "r")
