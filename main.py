@@ -43,6 +43,7 @@ def get_articles():
             rss_notice.grid_forget()
             rss_feed_entry.grid_forget()
             submit_rss.grid_forget()
+
             url = feedparser.parse(rss_feed_entry.get())
             label_text = url["entries"][num]["title_detail"]["value"]
             row_num1 = num + 1
@@ -84,19 +85,17 @@ ttk.Label(root, text=daily_verse[80:160]).grid(row=15, column=0)
 ttk.Label(root, text=daily_verse[160:240]).grid(row=16, column=0)
 
 # Weather web scraper - edit and document later
-weather_notice = ttk.Label(root, text="NOTE: Your location will not be stored. This is for weather information purposes. \nPlease enter a city or zip code.", anchor="center")
-weather_notice.grid(column=2, row=13)
-location = ttk.Entry(root)
-location.grid(column=2, row=14)
-
 def submit_weather():
+    location_file = open("location.txt", "w")
+    location_file.write(location.get())
+    location_file.close()
+
     weather_notice.grid_forget()
     submit_weather_button.grid_forget()
 
-    user_location = location.get()
+    user_location = open("location.txt", "r").read()
     location.grid_forget()
 
-    print(user_location)
     url = f"https://www.google.com/search?q=weather+{user_location}"
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
@@ -108,9 +107,25 @@ def submit_weather():
 def enter_key_weather(event):
     submit_weather()
 
-submit_weather_button = ttk.Button(root, text="Submit", command=submit_weather)
-submit_weather_button.grid(row=15, column=2)
-location.bind("<Return>", enter_key_weather)
+if open("location.txt", "r").read() == "":
+    weather_notice = ttk.Label(root, text="NOTE: Your location will not be stored. This is for weather information purposes. \nPlease enter a city or zip code.", anchor="center")
+    weather_notice.grid(column=2, row=13)
+    location = ttk.Entry(root)
+    location.grid(column=2, row=14)
+
+    submit_weather_button = ttk.Button(root, text="Submit", command=submit_weather)
+    submit_weather_button.grid(row=15, column=2)
+    location.bind("<Return>", enter_key_weather)
+else:
+    user_location = open("location.txt", "r").read()
+
+    url = f"https://www.google.com/search?q=weather+{user_location}"
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, "html.parser")
+    
+    ttk.Label(root, text=soup.find("div", class_="kCrYT").text, font=("Nevis", 15)).grid(row=13, column=2)
+    ttk.Label(root, text=soup.find("div", class_="BNeawe iBp4i AP7Wnd").text, font=("Times New Roman", 14)).grid(row=14, column=2)
+    ttk.Label(root, text=soup.find("div", class_="BNeawe tAd8D AP7Wnd").text, font=("Times New Roman", 14)).grid(row=15, column=2)
 
 # To-do list - edit and document later
 checklist_items = ttk.Entry(root)
