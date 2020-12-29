@@ -8,23 +8,27 @@ import json
 import webbrowser
 import time
 from bs4 import BeautifulSoup
+import sqlite3
 
 # Grabs API key
 load_dotenv("api_key.env")
 api_key = os.getenv("API_KEY")
 api_key = json.loads(api_key)
 
+# Opens DB
+con = sqlite3.connect("")
+
 # Initial window - edit later
 root = Tk()
 root.geometry("1175x600")
 root.title("Starter Page")
 
-# Title - edit later
+# Title
 title_label = ttk.Label(root, text="Starter Page", font=("Nevis", 18))
 title_label.grid(column=1, row=0, sticky=N)
 title_label.configure(anchor="center")
 
-# Time - solve not updating error
+# Time
 def update_time():
     now = time.strftime("%I:%M:%S")
     time_label.configure(text=now)
@@ -35,15 +39,17 @@ time_label.grid(row=0, column=2)
 update_time()
 
 # RSS Feed - improve later
-link_label = {}
-rss_feed_entry = ttk.Entry(root)
 def get_articles():
+    rss_feed = open("rss_feed.txt", "w")
+    rss_feed.write(rss_feed_entry.get())
+    rss_feed.close()
+
     row_article = 1
     row_link = 2
     for num in range(0, 6):
         try:
             rss_instructions.grid_forget()
-            url = feedparser.parse(rss_feed_entry.get())
+            url = feedparser.parse(open("rss_feed.txt", "r").read())
             rss_feed_entry.grid_forget()
             submit_rss.grid_forget()
 
@@ -70,14 +76,43 @@ def get_articles():
 def enter_key_rss(event):
     get_articles()
 
-rss_instructions = ttk.Label(root, text="Please enter an RSS Feed Link:")
-rss_instructions.grid(column=0, row=1)
-rss_feed_entry.grid(column=0, row=2)
-rss_feed_entry.bind("<Return>", enter_key_rss)
+link_label = {}
+if open("rss_feed.txt", "r").read() == "":
+    rss_feed_entry = ttk.Entry(root)
 
-submit_rss = ttk.Button(root, text="Submit", command=get_articles)
-submit_rss.grid(column=0, row=3)
-ttk.Label(root, text=" ").grid(row=13, column=0)
+    rss_instructions = ttk.Label(root, text="Please enter an RSS Feed Link: \n(NOTE: As of right now, you cannot change your RSS feed that you use, \nunless you go into the txt file that it uses)")
+    rss_instructions.grid(column=0, row=1)
+    rss_feed_entry.grid(column=0, row=2)
+    rss_feed_entry.bind("<Return>", enter_key_rss)
+
+    submit_rss = ttk.Button(root, text="Submit", command=get_articles)
+    submit_rss.grid(column=0, row=3)
+else:
+    row_article = 1
+    row_link = 2
+    for num in range(0, 6):
+        try:
+            url = feedparser.parse(open("rss_feed.txt", "r").read())
+
+            article_title = url["entries"][num]["title_detail"]["value"]
+            ttk.Label(root, text=f"{article_title[0:70]}...").grid(row=row_article, column=0)
+            row_article += 2
+            
+            article_link = url["entries"][num]["id"]
+            link_label[num] = ttk.Label(root, text=f"{article_link[0:70]}...")
+            link_label[num].grid(row=row_link, column=0)
+            row_link += 2
+        except KeyError:
+            continue
+        except IndexError:
+            continue
+
+    link_label[0].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][0]["id"]))
+    link_label[1].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][1]["id"]))
+    link_label[2].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][2]["id"]))
+    link_label[3].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][3]["id"]))
+    link_label[4].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][4]["id"]))
+    link_label[5].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][5]["id"]))
 
 # Verses grabber - edit later
 verses = open("verses.txt", "r")
@@ -116,7 +151,7 @@ def enter_key_weather(event):
     submit_weather()
 
 if open("location.txt", "r").read() == "":
-    weather_notice = ttk.Label(root, text="NOTE: Your location will not be stored. This is for weather information purposes. \nPlease enter a city or zip code.", anchor="center")
+    weather_notice = ttk.Label(root, text="Please enter a city or zip code: \n(NOTE: As of right now, you cannot change your location, \nunless you go into the txt file that it uses.)", anchor="center")
     weather_notice.grid(column=2, row=13)
     location = ttk.Entry(root)
     location.grid(column=2, row=14)

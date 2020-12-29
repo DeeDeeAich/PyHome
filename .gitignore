@@ -133,3 +133,4 @@ starter-py/
 *.env
 .DS_Store
 pyvenv.cfg
+.sqlite
