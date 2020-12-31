@@ -9,14 +9,21 @@ import webbrowser
 import time
 from bs4 import BeautifulSoup
 import sqlite3
+import mysql.connector
 
 # Grabs API key
 load_dotenv("api_key.env")
 api_key = os.getenv("API_KEY")
 api_key = json.loads(api_key)
 
-# Opens DB
-con = sqlite3.connect("")
+# Grabs DB Password
+load_dotenv("db_password.env")
+db_password = os.getenv("DB_PASSWORD")
+
+# Database Connection
+con = mysql.connector.connect(host="192.168.1.100", database="verses_db", user="admin", password=db_password)
+cur = con.cursor()
+cur.execute("select locations from verses")
 
 # Initial window - edit later
 root = Tk()
@@ -115,8 +122,8 @@ else:
     link_label[5].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][5]["id"]))
 
 # Verses grabber - edit later
-verses = open("verses.txt", "r")
-daily_verse = requests.get(f"https://api.esv.org/v3/passage/text/?q={verses.readline()}", headers=api_key)
+verse_location = cur.fetchall()
+daily_verse = requests.get(f"https://api.esv.org/v3/passage/text/?q={verse_location[0][0]}", headers=api_key)
 daily_verse = json.loads(daily_verse.text)
 daily_verse = daily_verse["passages"][0]
 
