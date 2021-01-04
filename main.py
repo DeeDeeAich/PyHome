@@ -225,4 +225,27 @@ def enter_key_checklist(event):
 add_item = ttk.Button(root, command=submit_checklist, text="Add Item").grid(row=2, column=2)
 checklist_items.bind("<Return>", enter_key_checklist)
 
+# Sports scores - edit later
+teams_notice = ttk.Label(root, text="Enter up to 4 teams (Separated by comma) \nFor college teams, please specify the sport.")
+teams_notice.grid(row=18, column=1)
+teams_entry = ttk.Entry(root)
+teams_entry.grid(column=1, row=19)
+
+def get_teams():
+    for team in teams_entry.get().split(","):
+        team_info = requests.get(f"https://www.google.com/search?q={team}+score")
+        soup = BeautifulSoup(team_info.content, "html.parser")
+        print(soup.find_all("div", class_="BNeawe s3v9rd AP7Wnd lRVwie")[2].text)
+        print(soup.find_all("div", class_="BNeawe s3v9rd AP7Wnd lRVwie")[3].text)
+        print(soup.find_all("div", class_="BNeawe deIvCb AP7Wnd")[2].text)
+        print(soup.find_all("div", class_="BNeawe deIvCb AP7Wnd")[4].text)
+
+    submit_teams.grid_forget()
+    teams_notice.grid_forget()
+    teams_entry.grid_forget()
+
+
+submit_teams = ttk.Button(root, text="Submit", command=get_teams)
+submit_teams.grid(column=1, row=20)
+
 root.mainloop()
