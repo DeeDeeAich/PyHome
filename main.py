@@ -214,6 +214,11 @@ def submit_checklist():
         checklist_items.delete(0, END)
         row_num = counter + 2
         items[counter].grid(row=row_num, column=2)
+        for i in range(0, 11):
+            if check_variable[i].get() == 1:
+                print("Checked!")
+            else:
+                print("Not checked!")
 
     for i in range(0, 10):
         if check_variable[i].get():
@@ -226,25 +231,46 @@ add_item = ttk.Button(root, command=submit_checklist, text="Add Item").grid(row=
 checklist_items.bind("<Return>", enter_key_checklist)
 
 # Sports scores - edit later
-teams_notice = ttk.Label(root, text="Enter up to 4 teams (Separated by comma) \nFor college teams, please specify the sport.")
+teams_notice = ttk.Label(root, text="Enter up to 3 teams (Separated by comma) \nFor college teams, please specify the sport.")
 teams_notice.grid(row=18, column=1)
 teams_entry = ttk.Entry(root)
 teams_entry.grid(column=1, row=19)
 
 def get_teams():
-    for team in teams_entry.get().split(","):
-        team_info = requests.get(f"https://www.google.com/search?q={team}+score")
-        soup = BeautifulSoup(team_info.content, "html.parser")
-        print(soup.find_all("div", class_="BNeawe s3v9rd AP7Wnd lRVwie")[2].text)
-        print(soup.find_all("div", class_="BNeawe s3v9rd AP7Wnd lRVwie")[3].text)
-        print(soup.find_all("div", class_="BNeawe deIvCb AP7Wnd")[2].text)
-        print(soup.find_all("div", class_="BNeawe deIvCb AP7Wnd")[4].text)
+    count = 0 
+    if teams_entry.get() == "":
+        error = Toplevel(root)
+        error.geometry("250x50")
+        ttk.Label(error, text="Error, 0 teams have been added!").pack()
+    elif len(teams_entry.get().split(",")) > 3:
+        error = Toplevel(root)
+        error.geometry("250x50")
+        ttk.Label(error, text="Error, cannot add more than 3 teams!").pack()
+    else:
+        for team in teams_entry.get().split(","):
+            team_info = requests.get(f"https://www.google.com/search?q={team}+score")
+            soup = BeautifulSoup(team_info.content, "html.parser")
 
-    submit_teams.grid_forget()
-    teams_notice.grid_forget()
-    teams_entry.grid_forget()
+            ttk.Label(root, text=soup.find_all("div", class_="BNeawe s3v9rd AP7Wnd lRVwie")[0].text).grid(column=count, row=18)
 
+            team1 = soup.find_all("div", class_="BNeawe s3v9rd AP7Wnd lRVwie")[1]
+            score1 = soup.find_all("div", class_="BNeawe deIvCb AP7Wnd")[1]
+            team2 = soup.find_all("div", class_="BNeawe s3v9rd AP7Wnd lRVwie")[2]
+            score2 = soup.find_all("div", class_="BNeawe deIvCb AP7Wnd")[2]
 
+            ttk.Label(root, text=f"{team1.text}\t{score1.text}").grid(column=count, row=19)
+            ttk.Label(root, text=f"{team2.text}\t{score2.text}").grid(column=count, row=20)
+
+            count += 1
+
+        submit_teams.grid_forget()
+        teams_notice.grid_forget()
+        teams_entry.grid_forget()
+
+def enter_key_teams(event):
+    get_teams()
+
+teams_entry.bind("<Return>", enter_key_teams)
 submit_teams = ttk.Button(root, text="Submit", command=get_teams)
 submit_teams.grid(column=1, row=20)
 
