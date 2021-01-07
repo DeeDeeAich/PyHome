@@ -46,80 +46,84 @@ time_label.grid(row=0, column=2)
 update_time()
 
 # RSS Feed - improve later
-def get_articles():
-    rss_feed = open("rss_feed.txt", "w")
-    rss_feed.write(rss_feed_entry.get())
-    rss_feed.close()
+# def get_articles():
+#     rss_feed = open("rss_feed.txt", "w")
+#     rss_feed.write(rss_feed_entry.get())
+#     rss_feed.close()
 
-    row_article = 1
-    row_link = 2
-    for num in range(0, 6):
-        try:
-            rss_instructions.grid_forget()
-            url = feedparser.parse(open("rss_feed.txt", "r").read())
-            rss_feed_entry.grid_forget()
-            submit_rss.grid_forget()
+#     row_article = 1
+#     row_link = 2
+#     for num in range(0, 6):
+#         try:
+#             rss_instructions.grid_forget()
+#             url = feedparser.parse(open("rss_feed.txt", "r").read())
+#             rss_feed_entry.grid_forget()
+#             submit_rss.grid_forget()
 
-            article_title = url["entries"][num]["title_detail"]["value"]
-            ttk.Label(root, text=f"{article_title[0:70]}...").grid(row=row_article, column=0)
-            row_article += 2
+#             article_title = url["entries"][num]["title_detail"]["value"]
+#             ttk.Label(root, text=f"{article_title[0:70]}...").grid(row=row_article, column=0)
+#             row_article += 2
             
-            article_link = url["entries"][num]["id"]
-            link_label[num] = ttk.Label(root, text=f"{article_link[0:70]}...")
-            link_label[num].grid(row=row_link, column=0)
-            row_link += 2
-        except KeyError:
-            continue
-        except IndexError:
-            continue
+#             article_link = url["entries"][num]["id"]
+#             link_label[num] = ttk.Label(root, text=f"{article_link[0:70]}...")
+#             link_label[num].grid(row=row_link, column=0)
+#             row_link += 2
+#         except KeyError:
+#             continue
+#         except IndexError:
+#             continue
 
-    link_label[0].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][0]["id"]))
-    link_label[1].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][1]["id"]))
-    link_label[2].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][2]["id"]))
-    link_label[3].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][3]["id"]))
-    link_label[4].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][4]["id"]))
-    link_label[5].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][5]["id"]))
+#     link_label[0].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][0]["id"]))
+#     link_label[1].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][1]["id"]))
+#     link_label[2].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][2]["id"]))
+#     link_label[3].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][3]["id"]))
+#     link_label[4].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][4]["id"]))
+#     link_label[5].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][5]["id"]))
 
-def enter_key_rss(event):
-    get_articles()
+# def enter_key_rss(event):
+#     get_articles()
 
-link_label = {}
-if open("rss_feed.txt", "r").read() == "":
-    rss_feed_entry = ttk.Entry(root)
+# link_label = {}
+# if open("rss_feed.txt", "r").read() == "":
+#     rss_feed_entry = ttk.Entry(root)
 
-    rss_instructions = ttk.Label(root, text="Please enter an RSS Feed Link: \n(NOTE: As of right now, you cannot change your RSS feed that you use, \nunless you go into the txt file that it uses)")
-    rss_instructions.grid(column=0, row=1)
-    rss_feed_entry.grid(column=0, row=2)
-    rss_feed_entry.bind("<Return>", enter_key_rss)
+#     rss_instructions = ttk.Label(root, text="Please enter an RSS Feed Link: \n(NOTE: As of right now, you cannot change your RSS feed that you use, \nunless you go into the txt file that it uses)")
+#     rss_instructions.grid(column=0, row=1)
+#     rss_feed_entry.grid(column=0, row=2)
+#     rss_feed_entry.bind("<Return>", enter_key_rss)
 
-    submit_rss = ttk.Button(root, text="Submit", command=get_articles)
-    submit_rss.grid(column=0, row=3)
-else:
-    row_article = 1
-    row_link = 2
-    for num in range(0, 6):
-        try:
-            url = feedparser.parse(open("rss_feed.txt", "r").read())
+#     submit_rss = ttk.Button(root, text="Submit", command=get_articles)
+#     submit_rss.grid(column=0, row=3)
+# else:
+#     row_article = 1
+#     row_link = 2
+#     for num in range(0, 6):
+#         try:
+#             url = feedparser.parse(open("rss_feed.txt", "r").read())
 
-            article_title = url["entries"][num]["title_detail"]["value"]
-            ttk.Label(root, text=f"{article_title[0:70]}...").grid(row=row_article, column=0)
-            row_article += 2
+#             article_title = url["entries"][num]["title_detail"]["value"]
+#             ttk.Label(root, text=f"{article_title[0:70]}...").grid(row=row_article, column=0)
+#             row_article += 2
             
-            article_link = url["entries"][num]["id"]
-            link_label[num] = ttk.Label(root, text=f"{article_link[0:70]}...")
-            link_label[num].grid(row=row_link, column=0)
-            row_link += 2
-        except KeyError:
-            continue
-        except IndexError:
-            continue
+#             article_link = url["entries"][num]["id"]
+#             link_label[num] = ttk.Label(root, text=f"{article_link[0:70]}...")
+#             link_label[num].grid(row=row_link, column=0)
+#             row_link += 2
+#         except KeyError:
+#             continue
+#         except IndexError:
+#             continue
 
-    link_label[0].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][0]["id"]))
-    link_label[1].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][1]["id"]))
-    link_label[2].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][2]["id"]))
-    link_label[3].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][3]["id"]))
-    link_label[4].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][4]["id"]))
-    link_label[5].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][5]["id"]))
+#     link_label[0].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][0]["id"]))
+#     link_label[1].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][1]["id"]))
+#     link_label[2].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][2]["id"]))
+#     link_label[3].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][3]["id"]))
+#     link_label[4].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][4]["id"]))
+#     link_label[5].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][5]["id"]))
+
+var = StringVar(root)
+var.set("Select a RSS Feed")
+ttk.OptionMenu(root, var, "Select a RSS Feed", "New York Times", "Washington Post", "Fox News").grid(row=1, column=0)
 
 # Verses grabber - edit later
 verse_location = cur.fetchall()
@@ -214,15 +218,11 @@ def submit_checklist():
         checklist_items.delete(0, END)
         row_num = counter + 2
         items[counter].grid(row=row_num, column=2)
-        for i in range(0, 11):
-            if check_variable[i].get() == 1:
-                print("Checked!")
-            else:
-                print("Not checked!")
 
     for i in range(0, 10):
-        if check_variable[i].get():
+        if IntVar().get() > 1:
             items[i].grid_forget()
+        
 
 def enter_key_checklist(event):
     submit_checklist()
