@@ -20,10 +20,14 @@ api_key = json.loads(api_key)
 load_dotenv("db_password.env")
 db_password = os.getenv("DB_PASSWORD")
 
-# Database Connection
-con = mysql.connector.connect(host="192.168.1.100", database="verses_db", user="admin", password=db_password)
-cur = con.cursor()
-cur.execute("select locations from verses")
+# Verses Database Connection
+verses_con = mysql.connector.connect(host="192.168.1.100", database="verses_db", user="admin", password=db_password)
+verses_cur = verses_con.cursor()
+verses_cur.execute("select locations from verses")
+
+# Master Database Connection
+master_con = sqlite3.connect("master.db")
+master_cur = master_con.cursor()
 
 # Initial window - edit later
 root = Tk()
@@ -47,16 +51,18 @@ update_time()
 
 # RSS Feed - improve later
 def get_articles():
-    rss_feed = open("rss_feed.txt", "w")
-    rss_feed.write(rss_feed_entry.get())
-    rss_feed.close()
-
+    rss = rss_feed_entry.get()
+    master_cur.execute(f"UPDATE user_info SET rss_feed = (?)", (rss,))
+    master_con.commit()
+    master_cur.execute("select rss_feed from user_info")
+    rss_feed = master_cur.fetchall()
+    
     row_article = 1
     row_link = 2
     for num in range(0, 6):
         try:
             rss_instructions.grid_forget()
-            url = feedparser.parse(open("rss_feed.txt", "r").read())
+            url = feedparser.parse(rss_feed[0][0])
             rss_feed_entry.grid_forget()
             submit_rss.grid_forget()
 
@@ -84,10 +90,12 @@ def enter_key_rss(event):
     get_articles()
 
 link_label = {}
-if open("rss_feed.txt", "r").read() == "":
+master_cur.execute("SELECT rss_feed FROM user_info")
+url = master_cur.fetchall()
+if url[0][0] == None:
     rss_feed_entry = ttk.Entry(root)
 
-    rss_instructions = ttk.Label(root, text="(NOTE: As of right now, you cannot change your RSS feed that you use, \nunless you go into the txt file that it uses) \nPlease enter an RSS Feed link: ")
+    rss_instructions = ttk.Label(root, text="(NOTE: As of right now, you cannot change your RSS feed that you use. \nPlease enter an RSS Feed link: ")
     rss_instructions.grid(column=0, row=1)
     rss_feed_entry.grid(column=0, row=2)
     rss_feed_entry.bind("<Return>", enter_key_rss)
@@ -99,13 +107,13 @@ else:
     row_link = 2
     for num in range(0, 6):
         try:
-            url = feedparser.parse(open("rss_feed.txt", "r").read())
+            parsed_url = feedparser.parse(url[0][0])
 
-            article_title = url["entries"][num]["title_detail"]["value"]
+            article_title = parsed_url["entries"][num]["title_detail"]["value"]
             ttk.Label(root, text=f"{article_title[0:70]}...").grid(row=row_article, column=0)
             row_article += 2
             
-            article_link = url["entries"][num]["id"]
+            article_link = parsed_url["entries"][num]["id"]
             link_label[num] = ttk.Label(root, text=f"{article_link[0:70]}...")
             link_label[num].grid(row=row_link, column=0)
             row_link += 2
@@ -114,20 +122,19 @@ else:
         except IndexError:
             continue
 
-    link_label[0].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][0]["id"]))
-    link_label[1].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][1]["id"]))
-    link_label[2].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][2]["id"]))
-    link_label[3].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][3]["id"]))
-    link_label[4].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][4]["id"]))
-    link_label[5].bind("<Button-1>", lambda e: webbrowser.open(url["entries"][5]["id"]))
+    link_label[0].bind("<Button-1>", lambda e: webbrowser.open(parsed_url["entries"][0]["id"]))
+    link_label[1].bind("<Button-1>", lambda e: webbrowser.open(parsed_url["entries"][1]["id"]))
+    link_label[2].bind("<Button-1>", lambda e: webbrowser.open(parsed_url["entries"][2]["id"]))
+    link_label[3].bind("<Button-1>", lambda e: webbrowser.open(parsed_url["entries"][3]["id"]))
+    link_label[4].bind("<Button-1>", lambda e: webbrowser.open(parsed_url["entries"][4]["id"]))
+    link_label[5].bind("<Button-1>", lambda e: webbrowser.open(parsed_url["entries"][5]["id"]))
 
 # Verses grabber - edit later
-verse_location = cur.fetchall()
+verse_location = verses_cur.fetchall()
 daily_verse = requests.get(f"https://api.esv.org/v3/passage/text/?q={verse_location[0][0]}", headers=api_key)
 daily_verse = json.loads(daily_verse.text)
 daily_verse = daily_verse["passages"][0]
 
-ttk.Label(root, text=" ").grid(row=12, column=0)
 ttk.Label(root, text="Daily Verse: ", font=("Cardo", 12)).grid(row=13, column=0)
 verse = ttk.Label(root, text=daily_verse[0:80], font=("Cardo", 11))
 verse.grid(row=14, column=0)
@@ -136,14 +143,14 @@ ttk.Label(root, text=daily_verse[160:240]).grid(row=16, column=0)
 
 # Weather web scraper - edit and document later
 def submit_weather():
-    location_file = open("location.txt", "w")
-    location_file.write(location.get())
-    location_file.close()
+    user_location = location.get()
+    master_cur.execute("update user_info set location = (?)", (user_location,))
+    master_con.commit()
+    master_cur.execute("select location from user_info")
+    user_location = master_cur.fetchall()
 
     weather_notice.grid_forget()
     submit_weather_button.grid_forget()
-
-    user_location = open("location.txt", "r").read()
     location.grid_forget()
 
     url = f"https://www.google.com/search?q=weather+{user_location}"
@@ -157,8 +164,10 @@ def submit_weather():
 def enter_key_weather(event):
     submit_weather()
 
-if open("location.txt", "r").read() == "":
-    weather_notice = ttk.Label(root, text="Please enter a city or zip code: \n(NOTE: As of right now, you cannot change your location, \nunless you go into the txt file that it uses.)", anchor="center")
+master_cur.execute("SELECT location FROM user_info")
+user_location = master_cur.fetchall()
+if user_location[0][0] == None:
+    weather_notice = ttk.Label(root, text="Please enter a city or zip code: \n(NOTE: As of right now, you cannot change your location)", anchor="center")
     weather_notice.grid(column=2, row=13)
     location = ttk.Entry(root)
     location.grid(column=2, row=14)
@@ -167,8 +176,6 @@ if open("location.txt", "r").read() == "":
     submit_weather_button.grid(row=15, column=2)
     location.bind("<Return>", enter_key_weather)
 else:
-    user_location = open("location.txt", "r").read()
-
     url = f"https://www.google.com/search?q=weather+{user_location}"
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")

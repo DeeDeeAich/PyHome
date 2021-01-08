@@ -134,3 +134,4 @@ starter-py/
 .DS_Store
 pyvenv.cfg
 .sqlite
+rss.txt
