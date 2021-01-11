@@ -1,5 +1,17 @@
 # starter-py
-An all-around program to start your day. It grabs the weather, news, to-do list, and much more!
+An all-around program to start your day. It grabs the weather, news, to-do list, sports scores, and a daily Bible verse!
 
-# WORK IN PROGRESS
-This program is a work in progress. All code is available at user discretion. Bugs and glitches are 100% guaranteed to be present. 
+# NOTICE 
+This program is in beta, it is bound to have bugs and other issues. Please use the issues tab to report to me.
+
+# Installation
+
+# RSS Feed
+
+# Daily Verse
+
+# Sports Scores
+
+# To-Do List
+
+# Weather
