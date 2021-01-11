@@ -262,12 +262,10 @@ def get_teams():
         teams_notice.grid_forget()
         teams_entry.grid_forget()
 
-master_cur.execute("select teams from user_info")
-#print(master_cur.fetchall())
-
 def enter_key_teams(event):
     get_teams()
 
+master_cur.execute("select teams from user_info")
 if master_cur.fetchall()[0][0] == None:
     teams_notice = ttk.Label(root, text="Enter up to 3 teams (Separated by comma) \nFor college teams, please specify the sport.")
     teams_notice.grid(row=18, column=1)
@@ -278,26 +276,22 @@ if master_cur.fetchall()[0][0] == None:
     submit_teams = ttk.Button(root, text="Submit", command=get_teams)
     submit_teams.grid(column=1, row=20)
 else:
-    for teams in master_cur.fetchall():
-        for team in teams:
-            team[0].split(",")
-            team_info = requests.get(f"https://www.google.com/search?q={team}+score")
+    master_cur.execute("select teams from user_info")
+    teams = master_cur.fetchall()[0][0].split(",")
+    count = 0
+    for team in teams:
+        team_info = requests.get(f"https://www.google.com/search?q={team}+score")
         soup = BeautifulSoup(team_info.content, "html.parser")
-
-        ttk.Label(root, text=soup.find_all("div", class_="BNeawe s3v9rd AP7Wnd lRVwie")[0].text).grid(column=count, row=18)
 
         team1 = soup.find_all("div", class_="BNeawe s3v9rd AP7Wnd lRVwie")[1]
         score1 = soup.find_all("div", class_="BNeawe deIvCb AP7Wnd")[1]
         team2 = soup.find_all("div", class_="BNeawe s3v9rd AP7Wnd lRVwie")[2]
         score2 = soup.find_all("div", class_="BNeawe deIvCb AP7Wnd")[2]
 
+        ttk.Label(root, text=soup.find_all("div", class_="BNeawe s3v9rd AP7Wnd lRVwie")[0].text).grid(column=count, row=18)
         ttk.Label(root, text=f"{team1.text}\t{score1.text}").grid(column=count, row=19)
         ttk.Label(root, text=f"{team2.text}\t{score2.text}").grid(column=count, row=20)
 
         count += 1
-
-        submit_teams.grid_forget()
-        teams_notice.grid_forget()
-        teams_entry.grid_forget()
 
 root.mainloop()
