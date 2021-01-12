@@ -31,7 +31,7 @@ master_cur = master_con.cursor()
 
 # Initial window - edit later
 root = Tk()
-root.geometry("1175x600")
+root.geometry("1000x400")
 root.title("Starter Page")
 
 # Title
@@ -168,26 +168,23 @@ master_cur.execute("SELECT location FROM user_info")
 user_location = master_cur.fetchall()
 if user_location[0][0] == None:
     weather_notice = ttk.Label(root, text="Please enter a city or zip code: \n(NOTE: As of right now, you cannot change your location)", anchor="center")
-    weather_notice.grid(column=2, row=13)
+    weather_notice.grid(column=2, row=14)
     location = ttk.Entry(root)
-    location.grid(column=2, row=14)
+    location.grid(column=2, row=15)
 
     submit_weather_button = ttk.Button(root, text="Submit", command=submit_weather)
-    submit_weather_button.grid(row=15, column=2)
+    submit_weather_button.grid(row=16, column=2)
     location.bind("<Return>", enter_key_weather)
 else:
     url = f"https://www.google.com/search?q=weather+{user_location}"
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
     
-    ttk.Label(root, text=soup.find("div", class_="kCrYT").text, font=("Nevis", 15)).grid(row=13, column=2)
-    ttk.Label(root, text=soup.find("div", class_="BNeawe iBp4i AP7Wnd").text, font=("Times New Roman", 14)).grid(row=14, column=2)
-    ttk.Label(root, text=soup.find("div", class_="BNeawe tAd8D AP7Wnd").text, font=("Times New Roman", 14)).grid(row=15, column=2)
+    ttk.Label(root, text=soup.find("div", class_="kCrYT").text, font=("Nevis", 15)).grid(row=14, column=2)
+    ttk.Label(root, text=soup.find("div", class_="BNeawe iBp4i AP7Wnd").text, font=("Times New Roman", 14)).grid(row=15, column=2)
+    ttk.Label(root, text=soup.find("div", class_="BNeawe tAd8D AP7Wnd").text, font=("Times New Roman", 14)).grid(row=16, column=2)
 
 # To-do list - edit and document later
-checklist_items = ttk.Entry(root)
-checklist_items.grid(row=1, column=2)
-
 check_variable = [IntVar()]
 items = {}
 counter = 0
@@ -213,20 +210,32 @@ def submit_checklist():
         check_variable.append(IntVar())
         items[counter] = ttk.Checkbutton(root, text=checklist_items.get(), variable=check_variable[counter])
         checklist_items.delete(0, END)
-        row_num = counter + 2
+        row_num = counter + 3
         items[counter].grid(row=row_num, column=2)
-
     for i in range(0, 10):
         if IntVar().get() > 1:
             items[i].grid_forget()
-        
 
 def enter_key_checklist(event):
     submit_checklist()
 
-add_item = ttk.Button(root, command=submit_checklist, text="Add Item").grid(row=2, column=2)
-checklist_items.bind("<Return>", enter_key_checklist)
-
+master_cur.execute("select todo_items from user_info")
+if master_cur.fetchall()[0][0] == None:
+    ttk.Label(root, text="Please enter To-Do List items: ").grid(row=1, column=2)
+    checklist_items = ttk.Entry(root)
+    checklist_items.grid(row=2, column=2)
+    add_item = ttk.Button(root, command=submit_checklist, text="Add Item").grid(row=3, column=2)
+    checklist_items.bind("<Return>", enter_key_checklist)
+else:
+    counter = 0
+    for i in range(0, 10):
+        master_cur.execute("select todo_items from user_info")
+    
+        counter += 1
+        check_variable.append(IntVar())
+        items[counter] = ttk.Checkbutton(root, text=master_cur.fetchall()[i][0], variable=check_variable[counter])
+        items[counter].grid(row=counter, column=2)
+      
 # Sports scores - edit later
 def get_teams():
     count = 0 
