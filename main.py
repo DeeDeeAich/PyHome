@@ -135,8 +135,8 @@ daily_verse = requests.get(f"https://api.esv.org/v3/passage/text/?q={verse_locat
 daily_verse = json.loads(daily_verse.text)
 daily_verse = daily_verse["passages"][0]
 
-ttk.Label(root, text="Daily Verse: ", font=("Cardo", 12)).grid(row=13, column=0)
-verse = ttk.Label(root, text=daily_verse[0:80], font=("Cardo", 11))
+ttk.Label(root, text="Daily Verse: ").grid(row=13, column=0)
+verse = ttk.Label(root, text=daily_verse[0:80])
 verse.grid(row=14, column=0)
 ttk.Label(root, text=daily_verse[80:160]).grid(row=15, column=0)
 ttk.Label(root, text=daily_verse[160:240]).grid(row=16, column=0)
@@ -207,14 +207,14 @@ def submit_checklist():
     else:
         global counter
         counter += 1
+        master_cur.execute(f"update user_info set todo_items = (?) where row = {counter}", (checklist_items.get(),))
+        master_con.commit()
+
         check_variable.append(IntVar())
         items[counter] = ttk.Checkbutton(root, text=checklist_items.get(), variable=check_variable[counter])
         checklist_items.delete(0, END)
         row_num = counter + 3
         items[counter].grid(row=row_num, column=2)
-    for i in range(0, 10):
-        if IntVar().get() > 1:
-            items[i].grid_forget()
 
 def enter_key_checklist(event):
     submit_checklist()
@@ -228,13 +228,22 @@ if master_cur.fetchall()[0][0] == None:
     checklist_items.bind("<Return>", enter_key_checklist)
 else:
     counter = 0
-    for i in range(0, 10):
+    for i in range(0, 11):
         master_cur.execute("select todo_items from user_info")
-    
-        counter += 1
-        check_variable.append(IntVar())
-        items[counter] = ttk.Checkbutton(root, text=master_cur.fetchall()[i][0], variable=check_variable[counter])
-        items[counter].grid(row=counter, column=2)
+        todo_items = master_cur.fetchall()
+        master_cur.execute("select row from user_info where todo_item")
+
+        if todo_items[i][0] == None:
+            continue
+        else:
+            master_cur.execute("select todo_items from user_info")
+            counter += 1
+            check_variable.append(IntVar())
+            ttk.Label(root, text="To-Do List: ", font=("Nevis", 12)).grid(row=1, column=2)
+            items[counter] = ttk.Checkbutton(root, text=todo_items[i][0], variable=check_variable[counter])
+            items[counter].grid(row=1 + counter, column=2)
+        for i in range(1, 11):
+            if master_cur.fetchall()
       
 # Sports scores - edit later
 def get_teams():
