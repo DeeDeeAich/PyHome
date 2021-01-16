@@ -228,10 +228,10 @@ if master_cur.fetchall()[0][0] == None:
     checklist_items.bind("<Return>", enter_key_checklist)
 else:
     counter = 0
-    for i in range(0, 11):
+    for i in range(0, 10):
         master_cur.execute("select todo_items from user_info")
         todo_items = master_cur.fetchall()
-        master_cur.execute("select row from user_info where todo_item")
+        master_cur.execute("select row from user_info where todo_items")
 
         if todo_items[i][0] == None:
             continue
