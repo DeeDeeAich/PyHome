@@ -242,8 +242,8 @@ else:
             ttk.Label(root, text="To-Do List: ", font=("Nevis", 12)).grid(row=1, column=2)
             items[counter] = ttk.Checkbutton(root, text=todo_items[i][0], variable=check_variable[counter])
             items[counter].grid(row=1 + counter, column=2)
-        for i in range(1, 11):
-            if master_cur.fetchall()
+        # for i in range(1, 11):
+        #     if master_cur.fetchall()
       
 # Sports scores - edit later
 def get_teams():
