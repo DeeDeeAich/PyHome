@@ -21,7 +21,7 @@ load_dotenv("db_password.env")
 db_password = os.getenv("DB_PASSWORD")
 
 # Verses Database Connection
-verses_con = mysql.connector.connect(host="192.168.1.100", database="verses_db", user="admin", password=db_password)
+verses_con = mysql.connector.connect(host="versesdb.ddns.net", database="verses_db", user="admin", password=db_password)
 verses_cur = verses_con.cursor()
 verses_cur.execute("select locations from verses")
 
@@ -31,11 +31,11 @@ master_cur = master_con.cursor()
 
 # Initial window - edit later
 root = Tk()
-root.geometry("1000x400")
-root.title("Starter Page")
+root.geometry("1100x550")
+root.title("PyHome")
 
 # Title
-title_label = ttk.Label(root, text="Starter Page", font=("Nevis", 18))
+title_label = ttk.Label(root, text="PyHome", font=("Nevis", 18))
 title_label.grid(column=1, row=0, sticky=N)
 title_label.configure(anchor="center")
 
@@ -67,11 +67,11 @@ def get_articles():
             submit_rss.grid_forget()
 
             article_title = url["entries"][num]["title_detail"]["value"]
-            ttk.Label(root, text=f"{article_title[0:70]}...").grid(row=row_article, column=0)
+            ttk.Label(root, text=f"{article_title[0:70]}...", font=("Georgia", 11)).grid(row=row_article, column=0)
             row_article += 2
             
             article_link = url["entries"][num]["id"]
-            link_label[num] = ttk.Label(root, text=f"{article_link[0:70]}...")
+            link_label[num] = ttk.Label(root, text=f"{article_link[0:70]}...", font=("Courier New", 8))
             link_label[num].grid(row=row_link, column=0)
             row_link += 2
         except KeyError:
@@ -110,11 +110,11 @@ else:
             parsed_url = feedparser.parse(url[0][0])
 
             article_title = parsed_url["entries"][num]["title_detail"]["value"]
-            ttk.Label(root, text=f"{article_title[0:70]}...").grid(row=row_article, column=0)
+            ttk.Label(root, text=f"{article_title[0:70]}...", font=("Georgia", 11)).grid(row=row_article, column=0)
             row_article += 2
             
             article_link = parsed_url["entries"][num]["id"]
-            link_label[num] = ttk.Label(root, text=f"{article_link[0:70]}...")
+            link_label[num] = ttk.Label(root, text=f"{article_link[0:70]}...", font=("Courier New", 8))
             link_label[num].grid(row=row_link, column=0)
             row_link += 2
         except KeyError:
@@ -135,7 +135,7 @@ daily_verse = requests.get(f"https://api.esv.org/v3/passage/text/?q={verse_locat
 daily_verse = json.loads(daily_verse.text)
 daily_verse = daily_verse["passages"][0]
 
-ttk.Label(root, text="Daily Verse: ").grid(row=13, column=0)
+ttk.Label(root, text="Daily Verse: ", font=("Georgia", 14)).grid(row=13, column=0)
 verse = ttk.Label(root, text=daily_verse[0:80])
 verse.grid(row=14, column=0)
 ttk.Label(root, text=daily_verse[80:160]).grid(row=15, column=0)
@@ -157,9 +157,9 @@ def submit_weather():
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
     
-    ttk.Label(root, text=soup.find("div", class_="kCrYT").text, font=("Nevis", 15)).grid(row=13, column=2)
-    ttk.Label(root, text=soup.find("div", class_="BNeawe iBp4i AP7Wnd").text, font=("Times New Roman", 14)).grid(row=14, column=2)
-    ttk.Label(root, text=soup.find("div", class_="BNeawe tAd8D AP7Wnd").text, font=("Times New Roman", 14)).grid(row=15, column=2)
+    ttk.Label(root, text=soup.find("div", class_="kCrYT").text, font=("Georgia", 14)).grid(row=13, column=2)
+    ttk.Label(root, text=soup.find("div", class_="BNeawe iBp4i AP7Wnd").text).grid(row=14, column=2)
+    ttk.Label(root, text=soup.find("div", class_="BNeawe tAd8D AP7Wnd").text).grid(row=15, column=2)
 
 def enter_key_weather(event):
     submit_weather()
@@ -180,9 +180,9 @@ else:
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
     
-    ttk.Label(root, text=soup.find("div", class_="kCrYT").text, font=("Nevis", 15)).grid(row=14, column=2)
-    ttk.Label(root, text=soup.find("div", class_="BNeawe iBp4i AP7Wnd").text, font=("Times New Roman", 14)).grid(row=15, column=2)
-    ttk.Label(root, text=soup.find("div", class_="BNeawe tAd8D AP7Wnd").text, font=("Times New Roman", 14)).grid(row=16, column=2)
+    ttk.Label(root, text=soup.find("div", class_="kCrYT").text, font=("Georgia", 14)).grid(row=13, column=2)
+    ttk.Label(root, text=soup.find("div", class_="BNeawe iBp4i AP7Wnd").text).grid(row=14, column=2)
+    ttk.Label(root, text=soup.find("div", class_="BNeawe tAd8D AP7Wnd").text).grid(row=15, column=2)
 
 # To-do list - edit and document later
 check_variable = [IntVar()]
@@ -239,7 +239,7 @@ else:
             master_cur.execute("select todo_items from user_info")
             counter += 1
             check_variable.append(IntVar())
-            ttk.Label(root, text="To-Do List: ", font=("Nevis", 12)).grid(row=1, column=2)
+            ttk.Label(root, text="To-Do List: ", font=("Georgia", 14)).grid(row=1, column=2)
             items[counter] = ttk.Checkbutton(root, text=todo_items[i][0], variable=check_variable[counter])
             items[counter].grid(row=1 + counter, column=2)
         # for i in range(1, 11):
