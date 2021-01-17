@@ -1,4 +1,4 @@
-# starter-py
+# PyHome
 An all-around program to start your day. It grabs the weather, news, to-do list, sports scores, and a daily Bible verse!
 
 # NOTICE 
