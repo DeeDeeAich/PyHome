@@ -23,7 +23,7 @@ There are many RSS feeds out there, here are some popular news sources' RSS feed
 
 These are just to name a few, you can always use your own and simply google the name of the news outlet's RSS feed. e.g. "Reuters RSS Feed"
 
-2. Press the submit button and watch the articles populate!
+2. Press the submit button (or enter key) and watch the articles populate!
 
 ![](images/rss_feed2.png?raw=true)
 
