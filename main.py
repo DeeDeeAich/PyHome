@@ -165,8 +165,8 @@ def enter_key_weather(event):
     submit_weather()
 
 master_cur.execute("SELECT location FROM user_info")
-user_location = master_cur.fetchall()
-if user_location[0][0] == None:
+user_location = master_cur.fetchall()[0][0]
+if user_location == None:
     weather_notice = ttk.Label(root, text="Please enter a city or zip code: \n(NOTE: As of right now, you cannot change your location)", anchor="center")
     weather_notice.grid(column=2, row=14)
     location = ttk.Entry(root)
@@ -235,15 +235,18 @@ else:
 
         if todo_items[i][0] == None:
             continue
-        else:
+        elif todo_items[i][0]:
+            ttk.Label(root, text="Please enter To-Do List items: ").grid(row=1, column=2)
+            checklist_items = ttk.Entry(root)
+            checklist_items.grid(row=2, column=2)
+            add_item = ttk.Button(root, command=submit_checklist, text="Add Item").grid(row=3, column=2)
+            checklist_items.bind("<Return>", enter_key_checklist)
+
             master_cur.execute("select todo_items from user_info")
             counter += 1
             check_variable.append(IntVar())
-            ttk.Label(root, text="To-Do List: ", font=("Georgia", 14)).grid(row=1, column=2)
             items[counter] = ttk.Checkbutton(root, text=todo_items[i][0], variable=check_variable[counter])
-            items[counter].grid(row=1 + counter, column=2)
-        # for i in range(1, 11):
-        #     if master_cur.fetchall()
+            items[counter].grid(row=3 + counter, column=2)
       
 # Sports scores - edit later
 def get_teams():
