@@ -43,11 +43,11 @@ The verse is updated each day from a remote database every 24 hours, please repo
 
 1. Enter (up to) 3 sports teams (sometimes collegiate teams or teams in the offseason do not work). Three teams at a time can be shown. Separate each by comma.
 
-![](images/sports_scores1?raw=true)
+![](images/sports_scores1.png?raw=true)
 
 2. Press submit and look at the scores!
 
-![](images/sports_scores2?raw=true)
+![](images/sports_scores2.png?raw=true)
 
 # To-Do List
 
