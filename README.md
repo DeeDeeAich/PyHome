@@ -7,6 +7,26 @@ There are also things that still cannot be changed, but only manipulated through
 
 # Installation
 
+1. Download installer from [releases](https://github.com/DeeDeeAich/PyHome/releases) section
+
+2. Open installer and (optional) configure install location
+
+![](images/installation2.png?raw=true)
+
+3. Press install and watch the program install!
+
+![](images/installation3.png?raw=true)
+
+4. Find install location and open executable file
+
+![](images/installation4.png?raw=true)
+
+5. (Optional) Create shortcut on desktop for executable
+
+![](images/installation5.png?raw=true)
+
+![](images/installation6.gif?raw=true)
+
 # RSS Feed
 
 1. Enter an RSS feed link in the text box 
