@@ -3,8 +3,29 @@ An all-around program to start your day. It grabs the weather, news, to-do list,
 
 # NOTICE 
 This program is in beta, it is bound to have bugs and other issues. Please use the issues tab to report to me.
+There are also things that still cannot be changed, but only manipulated through the master.db file. Use at your discretion.
 
 # Installation
+
+1. Download installer from [releases](https://github.com/DeeDeeAich/PyHome/releases) section
+
+2. Open installer and (optional) configure install location
+
+![](images/installation2.png?raw=true)
+
+3. Press install and watch the program install!
+
+![](images/installation3.png?raw=true)
+
+4. Find install location and open executable file
+
+![](images/installation4.png?raw=true)
+
+5. (Optional) Create shortcut on desktop for executable
+
+![](images/installation5.png?raw=true)
+
+![](images/installation6.gif?raw=true)
 
 # RSS Feed
 
@@ -12,7 +33,7 @@ This program is in beta, it is bound to have bugs and other issues. Please use t
 
 ![](images/rss_feed1.png?raw=true)
 
-There are many RSS feeds out there, here are some popular news sources' RSS feeds.
+There are many RSS feeds out there, here are some popular news sources' RSS feeds:
 
 * [New York Times (home Page)](https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml)
 * [Fox News (Latest)](http://feeds.foxnews.com/foxnews/latest)
@@ -34,8 +55,40 @@ These are just to name a few, you can always use your own and simply google the 
 
 # Daily Verse
 
+The verse is updated each day from a remote database every 24 hours, please report any text positioning issues with the verse.
+
+![](images/daily_verse1.png?raw=true)
+
 # Sports Scores
+
+1. Enter (up to) 3 sports teams (sometimes collegiate teams or teams in the offseason do not work). Three teams at a time can be shown. Separate each by comma.
+
+![](images/sports_scores1.png?raw=true)
+
+2. Press submit and look at the scores!
+
+![](images/sports_scores2.png?raw=true)
 
 # To-Do List
 
+1. Enter an item to add to the To-Do list.
+
+![](images/todo1.png?raw=true)
+
+2. Press add item (or the enter key) and see your item added!
+
+![](images/todo2.png?raw=true)
+
+3. Press the checkbox for the item to be marked as done
+
+![](images/todo3.gif?raw=true)
+
 # Weather
+
+1. Enter a city or zip code for the weather to be shown. (Leave blank for current location)
+
+![](images/weather1.png?raw=true)
+
+2. Press submit and see your weather info!
+
+![](images/weather2.png?raw=true)

@@ -1,3 +1,9 @@
+"""
+MADE BY DEEDEEAICH
+
+Warning: a lot of the code here is messy and will be cleaned up at a later date.
+"""
+
 import requests
 from tkinter import *
 from tkinter import ttk
